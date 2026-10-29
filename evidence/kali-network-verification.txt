@@ -1,0 +1,65 @@
+WK1-PM1 - Kali Linux lab verification
+Captured: 2026-10-29 14:17:45 +02:00
+Executed inside the running Kali VM through VirtualBox Guest Additions (guest user: kali).
+
+=== VirtualBox version ===
+7.2.22r175245
+
+=== ip -brief address ===
+lo               UNKNOWN        127.0.0.1/8 ::1/128
+eth0             UP             10.0.0.2/24 fe80::73:f678:94b8:a414/64
+
+=== ip route ===
+default via 10.0.0.1 dev eth0 proto dhcp src 10.0.0.2 metric 100
+10.0.0.0/24 dev eth0 proto kernel scope link src 10.0.0.2 metric 100
+
+=== nmcli device status ===
+DEVICE  STATE                   CONNECTION
+eth0    connected               Wired connection 1
+lo      connected (externally)  lo
+
+=== nmcli -f IP4 device show eth0 ===
+IP4.ADDRESS[1]:                         10.0.0.2/24
+IP4.GATEWAY:                            10.0.0.1
+IP4.DNS[1]:                             192.168.0.1
+
+=== Internet reachability ===
+https://www.kali.org   -> HTTP 200 via 104.18.5.159 in 1.626452s
+https://www.google.com -> HTTP 200 via 142.251.155.119 in 1.668277s
+
+=== Shared folder: /media/downloads ===
+downloads on /media/downloads type vboxsf (rw,nodev,relatime)
+total 4
+drwxrwx--- 1 root vboxsf    0 Oct 29 06:55 .
+drwxr-xr-x 3 root root   4096 Oct 29 06:56 ..
+
+=== VirtualBox VM settings ===
+name="kali-linux-2026.3-virtualbox-amd64"
+nat-network1="NatNetwork"
+macaddress1="080027C3FB76"
+nic1="natnetwork"
+clipboard="bidirectional"
+draganddrop="bidirectional"
+Name: 'downloads', Host path: 'C:\Users\Dawn\Downloads\downloads' (machine mapping), writable, auto-mount,
+mount-point: '/media/downloads'
+
+=== NAT Network ===
+Name:         NatNetwork
+Network:      10.0.0.0/24
+Gateway:      10.0.0.1
+DHCP Server:  Yes
+IPv6:         No
+
+=== NAT Network DHCP configuration ===
+NetworkName:    NatNetwork
+Dhcpd IP:       10.0.0.254
+LowerIPAddress: 10.0.0.3
+UpperIPAddress: 10.0.0.253
+Individual Config:    VM NIC: 2d792251-94c7-41f0-95e5-5ebf008983b2 slot 0, MAC 08:00:27:c3:fb:76
+    Fixed Address:    10.0.0.2
+
+=== Snapshots ===
+Name: WK1-PM1-before-lab-network (UUID: 758cd7a0-9413-46c6-b609-87f0e2dc4b9a)
+   Description: Cleanly powered-off rollback point before completing WK1-PM1 network settings
+      Name: WK1-PM1-lab-complete (UUID: 18912306-a37b-4f41-9410-2c2759db946c) *
+      Description: NAT Network 10.0.0.0/24, Kali 10.0.0.2/24 with internet access, /downloads shared folder, clipboard and drag-drop bidirectional
