@@ -8,5 +8,6 @@
 - Shared folder: host `Downloads\downloads` -> `/media/downloads` (rw, auto-mount)
 - Snapshot: `WK1-PM1-lab-complete`
 
-Evidence: `evidence/kali-network-verification.txt`
+Evidence: `evidence/kali-network-verification.txt` (live guest output)
+Desktop image: `evidence/kali-desktop.jpg`
 Setup detail: `docs/network-setup.md`
