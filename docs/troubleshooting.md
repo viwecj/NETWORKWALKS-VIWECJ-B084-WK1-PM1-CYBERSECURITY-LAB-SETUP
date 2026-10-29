@@ -1,5 +1,13 @@
 # Troubleshooting: Kali has no internet on a VirtualBox NAT Network
 
+## Values for this lab
+
+- VM: `kali-linux-2026.3-virtualbox-amd64` (UUID `2d792251-94c7-41f0-95e5-5ebf008983b2`)
+- NIC 1 MAC: `08:00:27:c3:fb:76`
+- `VBoxManage`: `"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"`
+
+Commands below use these values, so they can be copy-pasted as-is.
+
 ## Symptom
 
 Kali on a NAT Network (10.0.0.0/24) comes up with no IPv4 address at all. Inside the guest:
@@ -21,36 +29,42 @@ The guest is fine; the host-side DHCP configuration is the problem.
 
 ## Fix (host side, no guest password needed)
 
-Run these with the VM powered off. Set the path to `VBoxManage.exe` for your system.
+Run these with the VM powered off.
 
-1. Check the current DHCP configuration and look for `Individual Config` entries:
-
-```
-VBoxManage list dhcpservers
-```
-
-2. Move the DHCP server off 10.0.0.2 and leave .2 out of the pool:
+1. Power the VM off cleanly:
 
 ```
-VBoxManage dhcpserver modify --network=NatNetwork --server-ip=10.0.0.254 --lower-ip=10.0.0.3 --upper-ip=10.0.0.253
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" controlvm kali-linux-2026.3-virtualbox-amd64 acpipowerbutton
 ```
 
-3. Remove any duplicate per-client entries, then add exactly one:
+2. Check the current DHCP configuration and look for `Individual Config` entries:
 
 ```
-VBoxManage dhcpserver modify --network=NatNetwork --mac-address=<KALI_MAC> --remove-config
-VBoxManage dhcpserver modify --network=NatNetwork --vm=<VM_NAME_OR_UUID> --nic=1 --remove-config
-VBoxManage dhcpserver modify --network=NatNetwork --vm=<VM_NAME_OR_UUID> --nic=1 --fixed-address=10.0.0.2
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" list dhcpservers
 ```
 
-4. Restart the NAT Network so the change is applied:
+3. Move the DHCP server off 10.0.0.2 and leave .2 out of the pool:
 
 ```
-VBoxManage natnetwork stop --netname NatNetwork
-VBoxManage natnetwork start --netname NatNetwork
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" dhcpserver modify --network=NatNetwork --server-ip=10.0.0.254 --lower-ip=10.0.0.3 --upper-ip=10.0.0.253
 ```
 
-5. Boot Kali and verify from inside the guest:
+4. Remove duplicate per-client entries, then add exactly one:
+
+```
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" dhcpserver modify --network=NatNetwork --mac-address=080027C3FB76 --remove-config
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" dhcpserver modify --network=NatNetwork --vm=2d792251-94c7-41f0-95e5-5ebf008983b2 --nic=1 --remove-config
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" dhcpserver modify --network=NatNetwork --vm=2d792251-94c7-41f0-95e5-5ebf008983b2 --nic=1 --fixed-address=10.0.0.2
+```
+
+5. Restart the NAT Network so the change is applied:
+
+```
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" natnetwork stop --netname NatNetwork
+"C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" natnetwork start --netname NatNetwork
+```
+
+6. Boot Kali and verify from inside the guest:
 
 ```
 ip -brief address
