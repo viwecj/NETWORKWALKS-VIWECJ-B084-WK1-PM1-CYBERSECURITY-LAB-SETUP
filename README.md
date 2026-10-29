@@ -11,3 +11,4 @@
 Evidence: `evidence/kali-network-verification.txt` (live guest output)
 Desktop image: `evidence/kali-desktop.jpg`
 Setup detail: `docs/network-setup.md`
+No internet on Kali? See `docs/troubleshooting.md`
